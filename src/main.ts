@@ -1,14 +1,16 @@
-import "./assets/main.css";
+import "./style/css/style.css";
 
 import { createApp } from "vue";
 import App from "./App.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import Test from "./pages/Test.vue";
-import Test2Vue from "./pages/Test2.vue";
+import Menues from "./pages/Menues.vue";
+import Orders from "./pages/Orders.vue";
 
 const routes = [
   { path: "/", component: Test },
-  { path: "/about", component: Test2Vue },
+  { path: "/menues", component: Menues },
+  { path: "/orders", component: Orders },
 ];
 
 const router = createRouter({
