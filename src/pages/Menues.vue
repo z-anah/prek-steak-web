@@ -99,11 +99,12 @@ export default defineComponent({
             Rp {{ item.harga }}
           </td>
           <td class="px-6 py-4">
-          <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Hapus</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div></template>
+            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Hapus</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
 
 <style scoped></style>

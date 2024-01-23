@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
@@ -186,22 +184,23 @@
           </td>
           <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
             Apple iMac 27"
-        </th>
-        <td class="px-6 py-4">
-          Silver
-        </td>
-        <td class="px-6 py-4">
-          PC Desktop
-        </td>
-        <td class="px-6 py-4">
-          $3999
-        </td>
-        <td class="px-6 py-4">
-          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div></template>
+          </th>
+          <td class="px-6 py-4">
+            Silver
+          </td>
+          <td class="px-6 py-4">
+            PC Desktop
+          </td>
+          <td class="px-6 py-4">
+            $3999
+          </td>
+          <td class="px-6 py-4">
+            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
 
 <style scoped></style>

@@ -8,6 +8,7 @@ export default defineComponent({
       navs: [
         { label: "Menu", path: "/menues" },
         { label: "Pesanan", path: "/orders" },
+        { label: "Snacks", path: "/snacks" },
       ],
     }
   },
