@@ -14,5 +14,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const PS_MENU = { COL: collection(db, "ps_menu"), LABEL: "label" };
 const PS_SNACK = { COL: collection(db, "ps_snack"), LABEL: "label" };
+const FR_AR = { COL: collection(db, "fr_ar") };
 
-export { db, PS_MENU, PS_SNACK };
+export { db, PS_MENU, PS_SNACK, FR_AR};

@@ -10,59 +10,46 @@ import {
 } from "firebase/firestore";
 import { onUnmounted } from 'vue';
 import { PS_SNACK } from "../firebase";
-import type {  PsSnack } from "@/Model";
+import type { PsSnack, PsSnackUnit } from "@/Model";
 
 export default defineComponent({
   name: 'App',
   components: {},
   methods: {
-    resetItem() {
-      this.$data.item = {
-        label: "",
-        harga: 0,
-      } as PsSnack;
-    },
-    async updateSnack(label: string, harga: string, id: string) {
-      await setDoc(doc(PS_SNACK.COL, id), {
-        label,
-        harga: parseInt(harga),
-        date_updated: new Date(),
+    send() {
+      var timestamp = new Date().getTime();
+      this.$data.snacks.forEach((item) => {
+        // set item harga_total
+        item.harga_total = item.out_unit * item.harga;
       });
+      console.log(this.$data.snacks);
+      
     },
-    async createSnack(label: string, harga: string) {
-      await addDoc(PS_SNACK.COL, {
-        label,
-        harga: parseInt(harga),
-        date_created: new Date(),
-      });
-      this.resetItem();
-    },
-    async deleteSnack(id: string) {
-      await deleteDoc(doc(PS_SNACK.COL, id));
-    }
   },
   data: () => {
     return {
-      snacks: [] as PsSnack[],
-      item: {
-        label: "",
-        harga: 0,
-      } as PsSnack,
+      snacks: [] as PsSnackUnit[],
     }
   },
   async mounted() {
+
     const latestQuery = query(PS_SNACK.COL, orderBy(PS_SNACK.LABEL, "asc"));
     const liveSnacks = onSnapshot(latestQuery, (snapshot) => {
       this.$data.snacks = snapshot.docs.map((doc) => {
         return {
-          id: doc.id,
+          id: "",
+          id_snack: doc.id,
           harga: doc.data().harga,
           label: doc.data().label,
           date_created: doc.data().date_created,
+          unit: 0,
+          in_unit: 0,
+          out_unit: 0,
+          harga_total: 0,
         }
       });
     });
-    onUnmounted(liveSnacks)
+    onUnmounted(liveSnacks);
   }
 });
 
@@ -80,7 +67,10 @@ export default defineComponent({
             Label
           </th>
           <th scope="col" class="px-6 py-3">
-            Harga (Rp)
+            Masuk
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Sisa
           </th>
           <th scope="col" class="px-6 py-3">
             Aksi
@@ -88,26 +78,6 @@ export default defineComponent({
         </tr>
       </thead>
       <tbody>
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-          <td class="p-4">
-            <img src="https://img.icons8.com/?size=48&id=xZiTPdO57ltQ&format=png" class="w-8 max-h-full"
-              alt="Apple Watch">
-          </td>
-          <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-            <input
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              required v-model="item.label">
-          </td>
-          <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white text-end">
-            <input type="number"
-              class="text-end bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              required v-model="item.harga">
-          </td>
-          <td class="px-6 py-4">
-            <button @click="createSnack(item.label, item.harga)" href="#"
-              class="font-medium text-green-600 dark:text-green-500 hover:underline">Tambah</button>
-          </td>
-        </tr>
         <tr v-for="item in snacks" :key="item.id"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
           <td class="p-4">
@@ -122,23 +92,25 @@ export default defineComponent({
           <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white text-end">
             <input type="number"
               class="text-end bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              required v-model="item.harga">
+              required v-model="item.in_unit">
+          </td>
+          <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white text-end">
+            <input type="number"
+              class="text-end bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              required v-model="item.unit">
           </td>
           <td class="px-6 py-4">
-              <button @click="updateSnack(item.label, item.harga, item.id)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                Ubah
-              </button>
-               | 
-              <button @click="deleteSnack(item.id)" class="font-medium text-red-600 dark:text-red-500 hover:underline">
-                Hapus
-              </button>
           </td>
         </tr>
-        <tr v-if="snacks.length === 0">
-          <td colspan="4" class="px-6 py-4 text-center">
-            <div class="flex justify-center items-center">
-              <span class="ml-2 text-gray-400">No data</span>
-            </div>
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td></td>
+          <td></td>
+          <td></td>
+            <td></td>
+          <td class="px-6 py-4">
+            <button @click="send" class="font-medium text-green-600 dark:text-green-500 hover:underline">
+              Kirim
+            </button>
           </td>
         </tr>
       </tbody>
